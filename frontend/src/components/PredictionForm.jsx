@@ -1,7 +1,50 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const PredictionForm = ({ onResult }) => {
+const PredictionForm = ({ onResult, lang = 'en', translations = {} }) => {
+    const t = {
+        en: {
+            heading: 'Heart Health Assessment',
+            clinicalMode: 'Clinical Analysis (AI)',
+            symptomMode: 'Symptom Checker',
+            clinicalLoading: 'Analyzing Clinical Data...',
+            clinicalSubmit: 'Generate Prediction',
+            disclaimer: '*This tool is for screening purposes only and should not replace professional medical advice.',
+            error: 'Error predicting. Please ensure backend is running.',
+            symptomDesc: 'Check all that apply to you currently. This quick check will provide advice based on common symptoms.',
+            symptomLoading: 'Assessing Symptoms...',
+            symptomSubmit: 'Analyze Symptoms'
+        },
+        hi: {
+            heading: 'हृदय स्वास्थ्य आकलन',
+            clinicalMode: 'क्लिनिकल विश्लेषण (AI)',
+            symptomMode: 'लक्षण जांच',
+            clinicalLoading: 'क्लिनिकल डेटा का विश्लेषण हो रहा है...',
+            clinicalSubmit: 'पूर्वानुमान बनाएं',
+            disclaimer: '*यह टूल केवल स्क्रीनिंग के लिए है, यह पेशेवर चिकित्सा सलाह का विकल्प नहीं है।',
+            error: 'पूर्वानुमान में त्रुटि। कृपया सुनिश्चित करें कि बैकएंड चल रहा है।',
+            symptomDesc: 'जो लक्षण अभी लागू होते हैं उन्हें चुनें। यह त्वरित जांच सामान्य लक्षणों के आधार पर सलाह देगी।',
+            symptomLoading: 'लक्षणों का आकलन हो रहा है...',
+            symptomSubmit: 'लक्षणों का विश्लेषण करें'
+        }
+    };
+    const symptomQuestions = lang === 'hi'
+        ? [
+            { id: 'chestPain', label: 'क्या आपको छाती में दर्द या जकड़न महसूस हो रही है?' },
+            { id: 'shortnessOfBreath', label: 'क्या आपको सांस लेने में तकलीफ हो रही है?' },
+            { id: 'palpitations', label: 'क्या दिल की धड़कन अनियमित महसूस हो रही है?' },
+            { id: 'legSwelling', label: 'क्या पैरों या टखनों में सूजन है?' },
+            { id: 'fatigue', label: 'क्या असामान्य या अत्यधिक थकान है?' },
+            { id: 'dizziness', label: 'क्या चक्कर या हल्कापन महसूस हुआ है?' }
+        ]
+        : [
+            { id: 'chestPain', label: 'Do you feel Chest Pain or Tightness?' },
+            { id: 'shortnessOfBreath', label: 'Are you experiencing Shortness of Breath?' },
+            { id: 'palpitations', label: 'Do you have Palpitations (Irregular Heartbeat)?' },
+            { id: 'legSwelling', label: 'Do you have swelling in your legs or ankles?' },
+            { id: 'fatigue', label: 'Are you experiencing extreme or unusual fatigue?' },
+            { id: 'dizziness', label: 'Have you felt dizzy or lightheaded?' }
+        ];
     // Modes: 'clinical' (ML model) or 'symptom' (Rule-based)
     const [mode, setMode] = useState('clinical');
 
@@ -89,7 +132,7 @@ const PredictionForm = ({ onResult }) => {
             const response = await axios.post('http://localhost:5000/predict', formData);
             onResult({ ...response.data, type: 'clinical' });
         } catch (err) {
-            setError('Error predicting. Please ensure backend is running.');
+            setError(translations.form_error || t[lang].error);
             console.error(err);
         } finally {
             setLoading(false);
@@ -99,20 +142,20 @@ const PredictionForm = ({ onResult }) => {
     return (
         <div id="prediction-form" className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-4xl border border-slate-100 transition-all hover:shadow-2xl">
             <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-slate-800 mb-2">Heart Health Assessment</h2>
+                <h2 className="text-3xl font-bold text-slate-800 mb-2">{translations.form_heading || t[lang].heading}</h2>
                 <div className="flex justify-center mt-4">
                     <div className="bg-slate-100 p-1 rounded-xl inline-flex relative">
                         <button
                             onClick={() => setMode('clinical')}
                             className={`px-6 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${mode === 'clinical' ? 'bg-white text-blue-600 shadow-md' : 'text-slate-500 hover:text-slate-700'}`}
                         >
-                            Clinical Analysis (AI)
+                            {translations.form_mode_clinical || t[lang].clinicalMode}
                         </button>
                         <button
                             onClick={() => setMode('symptom')}
                             className={`px-6 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${mode === 'symptom' ? 'bg-white text-blue-600 shadow-md' : 'text-slate-500 hover:text-slate-700'}`}
                         >
-                            Symptom Checker
+                            {translations.form_mode_symptom || t[lang].symptomMode}
                         </button>
                     </div>
                 </div>
@@ -232,27 +275,20 @@ const PredictionForm = ({ onResult }) => {
 
                     <div className="md:col-span-2 mt-6">
                         <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-blue-500/30 transform hover:scale-[1.01] transition duration-200 disabled:opacity-50 text-lg">
-                            {loading ? 'Analyzing Clinical Data...' : 'Generate Prediction'}
+                            {loading ? (translations.form_clinical_loading || t[lang].clinicalLoading) : (translations.form_clinical_submit || t[lang].clinicalSubmit)}
                         </button>
                         <p className="text-center text-xs text-slate-400 mt-4">
-                            *This tool is for screening purposes only and should not replace professional medical advice.
+                            {translations.form_disclaimer || t[lang].disclaimer}
                         </p>
                     </div>
                     {error && <p className="text-red-500 text-center mt-2 md:col-span-2 bg-red-50 p-3 rounded-lg border border-red-200">{error}</p>}
                 </form>
             ) : (
                 <div className="space-y-6">
-                    <p className="text-slate-600 mb-6 text-center">Check all that apply to you currently. This quick check will provide advice based on common symptoms.</p>
+                    <p className="text-slate-600 mb-6 text-center">{translations.form_symptom_desc || t[lang].symptomDesc}</p>
 
                     <div className="grid grid-cols-1 gap-4">
-                        {[
-                            { id: 'chestPain', label: 'Do you feel Chest Pain or Tightness?' },
-                            { id: 'shortnessOfBreath', label: 'Are you experiencing Shortness of Breath?' },
-                            { id: 'palpitations', label: 'Do you have Palpitations (Irregular Heartbeat)?' },
-                            { id: 'legSwelling', label: 'Do you have swelling in your legs or ankles?' },
-                            { id: 'fatigue', label: 'Are you experiencing extreme or unusual fatigue?' },
-                            { id: 'dizziness', label: 'Have you felt dizzy or lightheaded?' }
-                        ].map((symptom) => (
+                        {symptomQuestions.map((symptom) => (
                             <label key={symptom.id} className={`flex items-center p-4 rounded-xl border-2 transition-all cursor-pointer ${symptomData[symptom.id] ? 'border-blue-500 bg-blue-50' : 'border-slate-100 hover:border-slate-200'}`}>
                                 <input
                                     type="checkbox"
@@ -268,7 +304,7 @@ const PredictionForm = ({ onResult }) => {
 
                     <div className="mt-8">
                         <button onClick={assessSymptoms} disabled={loading} className="w-full bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-teal-500/30 transform hover:scale-[1.01] transition duration-200 disabled:opacity-50 text-lg">
-                            {loading ? 'Assessing Symptoms...' : 'Analyze Symptoms'}
+                            {loading ? (translations.form_symptom_loading || t[lang].symptomLoading) : (translations.form_symptom_submit || t[lang].symptomSubmit)}
                         </button>
                     </div>
                 </div>

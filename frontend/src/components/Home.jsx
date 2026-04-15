@@ -3,7 +3,7 @@ import PredictionForm from './PredictionForm';
 import ResultDisplay from './ResultDisplay';
 import heartHero from '../assets/heart_hero.png';
 
-const Home = ({ lang = 'en' }) => {
+const Home = ({ lang = 'en', translations = {} }) => {
     const [result, setResult] = useState(null);
     const t = {
         en: {
@@ -58,28 +58,28 @@ const Home = ({ lang = 'en' }) => {
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div className="space-y-8 animate-fade-in-up">
                             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full border border-blue-100 text-blue-700 text-sm font-semibold">
-                                <span>✨</span> <span>{t[lang].heroBadge}</span>
+                                <span>✨</span> <span>{translations.home_hero_badge || t[lang].heroBadge}</span>
                             </div>
                             <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-slate-900">
-                                {t[lang].heroTitle1} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">{t[lang].heroTitle2}</span>
+                                {translations.home_hero_title_1 || t[lang].heroTitle1} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">{translations.home_hero_title_2 || t[lang].heroTitle2}</span>
                             </h1>
                             <p className="text-xl text-slate-600 leading-relaxed max-w-lg">
-                                {t[lang].heroDesc}
+                                {translations.home_hero_desc || t[lang].heroDesc}
                             </p>
                             <div className="flex items-center gap-4">
                                 <button onClick={scrollToPredict} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition shadow-xl shadow-blue-500/25 flex items-center gap-2 transform hover:-translate-y-1">
-                                    {t[lang].startAnalysis} <span>→</span>
+                                    {translations.home_start_analysis || t[lang].startAnalysis} <span>→</span>
                                 </button>
                             </div>
                             <div className="flex items-center gap-8 pt-4">
                                 <div>
                                     <p className="text-3xl font-bold text-slate-900">88.33%</p>
-                                    <p className="text-slate-500 text-sm">{t[lang].accuracyRate}</p>
+                                    <p className="text-slate-500 text-sm">{translations.home_accuracy_rate || t[lang].accuracyRate}</p>
                                 </div>
                                 <div className="h-12 w-px bg-slate-200"></div>
                                 <div>
                                     <p className="text-3xl font-bold text-slate-900">24/7</p>
-                                    <p className="text-slate-500 text-sm">{t[lang].availability}</p>
+                                    <p className="text-slate-500 text-sm">{translations.home_availability || t[lang].availability}</p>
                                 </div>
                             </div>
                         </div>
@@ -97,9 +97,9 @@ const Home = ({ lang = 'en' }) => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid md:grid-cols-3 gap-8">
                         {[
-                            { icon: '⚡', title: t[lang].instantResults, desc: t[lang].instantResultsDesc },
-                            { icon: '🛡️', title: t[lang].privateSecure, desc: t[lang].privateSecureDesc },
-                            { icon: '🩺', title: t[lang].medicalGrade, desc: t[lang].medicalGradeDesc }
+                            { icon: '⚡', title: translations.home_instant_results || t[lang].instantResults, desc: translations.home_instant_results_desc || t[lang].instantResultsDesc },
+                            { icon: '🛡️', title: translations.home_private_secure || t[lang].privateSecure, desc: translations.home_private_secure_desc || t[lang].privateSecureDesc },
+                            { icon: '🩺', title: translations.home_medical_grade || t[lang].medicalGrade, desc: translations.home_medical_grade_desc || t[lang].medicalGradeDesc }
                         ].map((feature, i) => (
                             <div key={i} className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-100 hover:shadow-lg transition group">
                                 <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-3xl shadow-sm mb-6 group-hover:scale-110 transition">
@@ -117,14 +117,14 @@ const Home = ({ lang = 'en' }) => {
             <section id="prediction-section" className="py-24 bg-slate-50 relative">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 items-center flex flex-col">
                     <div className="text-center max-w-2xl mx-auto mb-16">
-                        <h2 className="text-4xl font-extrabold text-slate-900 mb-4">{t[lang].startAssessmentTitle}</h2>
-                        <p className="text-lg text-slate-600">{t[lang].startAssessmentDesc}</p>
+                        <h2 className="text-4xl font-extrabold text-slate-900 mb-4">{translations.home_start_assessment_title || t[lang].startAssessmentTitle}</h2>
+                        <p className="text-lg text-slate-600">{translations.home_start_assessment_desc || t[lang].startAssessmentDesc}</p>
                     </div>
 
                     {!result ? (
-                        <PredictionForm onResult={setResult} lang={lang} />
+                        <PredictionForm onResult={setResult} lang={lang} translations={translations} />
                     ) : (
-                        <ResultDisplay result={result} onReset={() => setResult(null)} lang={lang} />
+                        <ResultDisplay result={result} onReset={() => setResult(null)} lang={lang} translations={translations} />
                     )}
                 </div>
             </section>
