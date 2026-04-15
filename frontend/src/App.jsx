@@ -5,7 +5,10 @@ import About from './components/About';
 import LearnMore from './components/LearnMore';
 
 function App() {
-  const [lang, setLang] = useState('en');
+  const [lang, setLang] = useState(() => {
+    const savedLang = window.localStorage.getItem('heartguard_lang');
+    return savedLang === 'hi' ? 'hi' : 'en';
+  });
   const fallbackTranslations = {
     en: {
       nav_home: 'Home',
@@ -41,6 +44,10 @@ function App() {
       }
     };
     loadTranslations();
+  }, [lang]);
+
+  useEffect(() => {
+    window.localStorage.setItem('heartguard_lang', lang);
   }, [lang]);
 
   const scrollToPredict = () => {
