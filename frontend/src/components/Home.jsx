@@ -117,7 +117,7 @@ const Home = ({ lang = 'en' }) => {
             <section id="prediction-section" className="py-24 bg-slate-50 relative">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 items-center flex flex-col">
                     <div className="text-center max-w-2xl mx-auto mb-16">
-                        <h2 className="text-4xl font-extrabold text-slate-900 mb-4">Start Your Assessment</h2>
+                        <h2 className="text-4xl font-extrabold text-slate-900 mb-4">{t[lang].startAssessmentTitle}</h2>
                         <p className="text-lg text-slate-600">{t[lang].startAssessmentDesc}</p>
                     </div>
 
