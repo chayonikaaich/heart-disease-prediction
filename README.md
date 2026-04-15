@@ -6,6 +6,12 @@ A comprehensive full-stack application designed to predict the likelihood of hea
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
 ![React](https://img.shields.io/badge/React-18-cyan)
 ![Flask](https://img.shields.io/badge/Framework-Flask-black)
+![Streamlit](https://img.shields.io/badge/Streamlit-App-red)
+
+## 🚀 Quick Access (Local)
+Once the server is running, you can access the application here:
+👉 **[http://localhost:5174](http://localhost:5174)**
+(Note: Ensure backend is running on port 5000)
 
 ---
 
