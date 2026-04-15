@@ -5,24 +5,6 @@ import heartHero from '../assets/heart_hero.png';
 
 const Home = () => {
     const [result, setResult] = useState(null);
-    const [checklistState, setChecklistState] = useState({
-        exercise: false,
-        noSmoking: false,
-        lowSalt: false,
-        sleep: false,
-        hydration: false
-    });
-
-    const checklistItems = [
-        { key: 'exercise', label: '30 minutes of physical activity' },
-        { key: 'noSmoking', label: 'No smoking or tobacco today' },
-        { key: 'lowSalt', label: 'Low-salt and balanced meals' },
-        { key: 'sleep', label: '7-8 hours of quality sleep' },
-        { key: 'hydration', label: 'Stayed well hydrated' }
-    ];
-
-    const completedCount = Object.values(checklistState).filter(Boolean).length;
-    const progressPercentage = Math.round((completedCount / checklistItems.length) * 100);
 
     const scrollToPredict = () => {
         setResult(null);
@@ -30,13 +12,6 @@ const Home = () => {
             const element = document.getElementById('prediction-section');
             if (element) element.scrollIntoView({ behavior: 'smooth' });
         }, 100);
-    };
-
-    const handleChecklistToggle = (key) => {
-        setChecklistState((prev) => ({
-            ...prev,
-            [key]: !prev[key]
-        }));
     };
 
     return (
@@ -98,56 +73,6 @@ const Home = () => {
                                 <p className="text-slate-500 leading-relaxed">{feature.desc}</p>
                             </div>
                         ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Interactive Prevention Checklist */}
-            <section className="py-20 bg-gradient-to-b from-blue-50 to-slate-50 border-b border-slate-100">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="bg-white rounded-3xl border border-slate-100 shadow-lg p-8 md:p-10">
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-                            <div>
-                                <h2 className="text-3xl font-extrabold text-slate-900">Daily Heart-Healthy Checklist</h2>
-                                <p className="text-slate-600 mt-2">Track healthy habits before running your AI assessment.</p>
-                            </div>
-                            <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-bold">
-                                {completedCount}/{checklistItems.length} completed
-                            </div>
-                        </div>
-
-                        <div className="mb-8">
-                            <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
-                                <div
-                                    className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-300"
-                                    style={{ width: `${progressPercentage}%` }}
-                                ></div>
-                            </div>
-                            <p className="text-sm text-slate-500 mt-2">Wellness score: <span className="font-semibold text-slate-700">{progressPercentage}%</span></p>
-                        </div>
-
-                        <div className="grid gap-3">
-                            {checklistItems.map((item) => (
-                                <label
-                                    key={item.key}
-                                    className={`flex items-center gap-3 p-4 rounded-xl border transition cursor-pointer ${checklistState[item.key] ? 'border-green-300 bg-green-50' : 'border-slate-200 bg-slate-50 hover:border-slate-300'}`}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={checklistState[item.key]}
-                                        onChange={() => handleChecklistToggle(item.key)}
-                                        className="w-5 h-5 accent-blue-600"
-                                    />
-                                    <span className={`font-medium ${checklistState[item.key] ? 'text-green-700' : 'text-slate-700'}`}>
-                                        {item.label}
-                                    </span>
-                                </label>
-                            ))}
-                        </div>
-
-                        <p className="text-xs text-slate-500 mt-6">
-                            This checklist promotes preventive awareness and does not replace medical consultation.
-                        </p>
                     </div>
                 </div>
             </section>
