@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const PredictionForm = ({ onResult, lang = 'en', translations = {} }) => {
+    const tx = (key, fallback) => translations[key] || fallback;
     const t = {
         en: {
             heading: 'Heart Health Assessment',
@@ -28,23 +29,14 @@ const PredictionForm = ({ onResult, lang = 'en', translations = {} }) => {
             symptomSubmit: 'लक्षणों का विश्लेषण करें'
         }
     };
-    const symptomQuestions = lang === 'hi'
-        ? [
-            { id: 'chestPain', label: 'क्या आपको छाती में दर्द या जकड़न महसूस हो रही है?' },
-            { id: 'shortnessOfBreath', label: 'क्या आपको सांस लेने में तकलीफ हो रही है?' },
-            { id: 'palpitations', label: 'क्या दिल की धड़कन अनियमित महसूस हो रही है?' },
-            { id: 'legSwelling', label: 'क्या पैरों या टखनों में सूजन है?' },
-            { id: 'fatigue', label: 'क्या असामान्य या अत्यधिक थकान है?' },
-            { id: 'dizziness', label: 'क्या चक्कर या हल्कापन महसूस हुआ है?' }
-        ]
-        : [
-            { id: 'chestPain', label: 'Do you feel Chest Pain or Tightness?' },
-            { id: 'shortnessOfBreath', label: 'Are you experiencing Shortness of Breath?' },
-            { id: 'palpitations', label: 'Do you have Palpitations (Irregular Heartbeat)?' },
-            { id: 'legSwelling', label: 'Do you have swelling in your legs or ankles?' },
-            { id: 'fatigue', label: 'Are you experiencing extreme or unusual fatigue?' },
-            { id: 'dizziness', label: 'Have you felt dizzy or lightheaded?' }
-        ];
+    const symptomQuestions = [
+        { id: 'chestPain', label: tx('symptom_q_chest_pain', lang === 'hi' ? 'क्या आपको छाती में दर्द या जकड़न महसूस हो रही है?' : 'Do you feel Chest Pain or Tightness?') },
+        { id: 'shortnessOfBreath', label: tx('symptom_q_breath', lang === 'hi' ? 'क्या आपको सांस लेने में तकलीफ हो रही है?' : 'Are you experiencing Shortness of Breath?') },
+        { id: 'palpitations', label: tx('symptom_q_palpitations', lang === 'hi' ? 'क्या दिल की धड़कन अनियमित महसूस हो रही है?' : 'Do you have Palpitations (Irregular Heartbeat)?') },
+        { id: 'legSwelling', label: tx('symptom_q_swelling', lang === 'hi' ? 'क्या पैरों या टखनों में सूजन है?' : 'Do you have swelling in your legs or ankles?') },
+        { id: 'fatigue', label: tx('symptom_q_fatigue', lang === 'hi' ? 'क्या असामान्य या अत्यधिक थकान है?' : 'Are you experiencing extreme or unusual fatigue?') },
+        { id: 'dizziness', label: tx('symptom_q_dizziness', lang === 'hi' ? 'क्या चक्कर या हल्कापन महसूस हुआ है?' : 'Have you felt dizzy or lightheaded?') }
+    ];
     // Modes: 'clinical' (ML model) or 'symptom' (Rule-based)
     const [mode, setMode] = useState('clinical');
 
@@ -90,26 +82,26 @@ const PredictionForm = ({ onResult, lang = 'en', translations = {} }) => {
         if (chestPain || (shortnessOfBreath && seriousSymptomsCount >= 2)) {
             riskLevel = 'High';
             advice = [
-                "Seek emergency medical care immediately.",
-                "Do not drive yourself to the hospital.",
-                "Chew an aspirin if available and not allergic.",
-                "Try to stay calm and sit down."
+                tx('symptom_advice_high_1', "Seek emergency medical care immediately."),
+                tx('symptom_advice_high_2', "Do not drive yourself to the hospital."),
+                tx('symptom_advice_high_3', "Chew an aspirin if available and not allergic."),
+                tx('symptom_advice_high_4', "Try to stay calm and sit down.")
             ];
         } else if (totalSymptomsCount >= 3 || palpitations || legSwelling) {
             riskLevel = 'Moderate';
             advice = [
-                "Consult a cardiologist within 24 hours.",
-                "Monitor your blood pressure and heart rate.",
-                "Avoid physical exertion until consulted.",
-                "Limit salt intake if experiencing swelling."
+                tx('symptom_advice_moderate_1', "Consult a cardiologist within 24 hours."),
+                tx('symptom_advice_moderate_2', "Monitor your blood pressure and heart rate."),
+                tx('symptom_advice_moderate_3', "Avoid physical exertion until consulted."),
+                tx('symptom_advice_moderate_4', "Limit salt intake if experiencing swelling.")
             ];
         } else {
             riskLevel = 'Low';
             advice = [
-                "Monitor your symptoms for the next 3 days.",
-                "Ensure you are staying well-hydrated.",
-                "Maintain a regular sleep schedule.",
-                "Reduce caffeine and stress levels."
+                tx('symptom_advice_low_1', "Monitor your symptoms for the next 3 days."),
+                tx('symptom_advice_low_2', "Ensure you are staying well-hydrated."),
+                tx('symptom_advice_low_3', "Maintain a regular sleep schedule."),
+                tx('symptom_advice_low_4', "Reduce caffeine and stress levels.")
             ];
         }
 
@@ -165,111 +157,111 @@ const PredictionForm = ({ onResult, lang = 'en', translations = {} }) => {
                 <form onSubmit={handleClinicalSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Age */}
                     <div>
-                        <label className="block text-slate-700 text-sm font-semibold mb-2">Age (years)</label>
-                        <input type="number" name="age" required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition placeholder-slate-400" placeholder="e.g. 45" onChange={handleClinicalChange} />
+                        <label className="block text-slate-700 text-sm font-semibold mb-2">{tx('form_age', 'Age (years)')}</label>
+                        <input type="number" name="age" required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition placeholder-slate-400" placeholder={tx('form_age_placeholder', 'e.g. 45')} onChange={handleClinicalChange} />
                     </div>
 
                     {/* Sex */}
                     <div>
-                        <label className="block text-slate-700 text-sm font-semibold mb-2">Sex</label>
+                        <label className="block text-slate-700 text-sm font-semibold mb-2">{tx('form_sex', 'Sex')}</label>
                         <select name="sex" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition" onChange={handleClinicalChange}>
-                            <option value="1">Male</option>
-                            <option value="0">Female</option>
+                            <option value="1">{tx('form_male', 'Male')}</option>
+                            <option value="0">{tx('form_female', 'Female')}</option>
                         </select>
                     </div>
 
                     {/* CP */}
                     <div>
-                        <label className="block text-slate-700 text-sm font-semibold mb-2">Chest Pain Type</label>
+                        <label className="block text-slate-700 text-sm font-semibold mb-2">{tx('form_cp', 'Chest Pain Type')}</label>
                         <select name="cp" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition" onChange={handleClinicalChange}>
-                            <option value="0">Typical Angina</option>
-                            <option value="1">Atypical Angina</option>
-                            <option value="2">Non-anginal Pain</option>
-                            <option value="3">Asymptomatic</option>
+                            <option value="0">{tx('form_cp_typical', 'Typical Angina')}</option>
+                            <option value="1">{tx('form_cp_atypical', 'Atypical Angina')}</option>
+                            <option value="2">{tx('form_cp_nonanginal', 'Non-anginal Pain')}</option>
+                            <option value="3">{tx('form_cp_asymptomatic', 'Asymptomatic')}</option>
                         </select>
                     </div>
 
                     {/* Resting BP */}
                     <div>
-                        <label className="block text-slate-700 text-sm font-semibold mb-2">Resting BP (mm Hg)</label>
+                        <label className="block text-slate-700 text-sm font-semibold mb-2">{tx('form_resting_bp', 'Resting BP (mm Hg)')}</label>
                         <div className="relative">
-                            <input type="number" name="trestbps" required placeholder="e.g. 120" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition placeholder-slate-400" onChange={handleClinicalChange} />
+                            <input type="number" name="trestbps" required placeholder={tx('form_bp_placeholder', 'e.g. 120')} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition placeholder-slate-400" onChange={handleClinicalChange} />
                             <span className="absolute right-4 top-3.5 text-slate-400 text-sm font-medium">mmHg</span>
                         </div>
                     </div>
 
                     {/* Cholesterol */}
                     <div>
-                        <label className="block text-slate-700 text-sm font-semibold mb-2">Cholesterol (mg/dl)</label>
+                        <label className="block text-slate-700 text-sm font-semibold mb-2">{tx('form_chol', 'Cholesterol (mg/dl)')}</label>
                         <div className="relative">
-                            <input type="number" name="chol" required placeholder="e.g. 200" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition placeholder-slate-400" onChange={handleClinicalChange} />
+                            <input type="number" name="chol" required placeholder={tx('form_chol_placeholder', 'e.g. 200')} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition placeholder-slate-400" onChange={handleClinicalChange} />
                             <span className="absolute right-4 top-3.5 text-slate-400 text-sm font-medium">mg/dl</span>
                         </div>
                     </div>
 
                     {/* FBS */}
                     <div>
-                        <label className="block text-slate-700 text-sm font-semibold mb-2">Fasting Blood Sugar ({">"} 120 mg/dl)</label>
+                        <label className="block text-slate-700 text-sm font-semibold mb-2">{tx('form_fbs', 'Fasting Blood Sugar (> 120 mg/dl)')}</label>
                         <select name="fbs" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition" onChange={handleClinicalChange}>
-                            <option value="0">False</option>
-                            <option value="1">True</option>
+                            <option value="0">{tx('form_false', 'False')}</option>
+                            <option value="1">{tx('form_true', 'True')}</option>
                         </select>
                     </div>
 
                     {/* RestECG */}
                     <div>
-                        <label className="block text-slate-700 text-sm font-semibold mb-2">Resting ECG</label>
+                        <label className="block text-slate-700 text-sm font-semibold mb-2">{tx('form_restecg', 'Resting ECG')}</label>
                         <select name="restecg" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition" onChange={handleClinicalChange}>
-                            <option value="0">Normal</option>
-                            <option value="1">ST-T Wave Abnormality</option>
-                            <option value="2">Left Ventricular Hypertrophy</option>
+                            <option value="0">{tx('form_restecg_normal', 'Normal')}</option>
+                            <option value="1">{tx('form_restecg_st', 'ST-T Wave Abnormality')}</option>
+                            <option value="2">{tx('form_restecg_lvh', 'Left Ventricular Hypertrophy')}</option>
                         </select>
                     </div>
 
                     {/* Max Heart Rate */}
                     <div>
-                        <label className="block text-slate-700 text-sm font-semibold mb-2">Max Heart Rate</label>
-                        <input type="number" name="thalach" required placeholder="e.g. 150" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition placeholder-slate-400" onChange={handleClinicalChange} />
+                        <label className="block text-slate-700 text-sm font-semibold mb-2">{tx('form_thalach', 'Max Heart Rate')}</label>
+                        <input type="number" name="thalach" required placeholder={tx('form_thalach_placeholder', 'e.g. 150')} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition placeholder-slate-400" onChange={handleClinicalChange} />
                     </div>
 
                     {/* ExAng */}
                     <div>
-                        <label className="block text-slate-700 text-sm font-semibold mb-2">Exercise Induced Angina</label>
+                        <label className="block text-slate-700 text-sm font-semibold mb-2">{tx('form_exang', 'Exercise Induced Angina')}</label>
                         <select name="exang" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition" onChange={handleClinicalChange}>
-                            <option value="0">No</option>
-                            <option value="1">Yes</option>
+                            <option value="0">{tx('form_no', 'No')}</option>
+                            <option value="1">{tx('form_yes', 'Yes')}</option>
                         </select>
                     </div>
 
                     {/* Oldpeak */}
                     <div>
-                        <label className="block text-slate-700 text-sm font-semibold mb-2">Oldpeak (ST Depression)</label>
-                        <input type="number" step="0.1" name="oldpeak" required placeholder="e.g. 1.0" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition placeholder-slate-400" onChange={handleClinicalChange} />
+                        <label className="block text-slate-700 text-sm font-semibold mb-2">{tx('form_oldpeak', 'Oldpeak (ST Depression)')}</label>
+                        <input type="number" step="0.1" name="oldpeak" required placeholder={tx('form_oldpeak_placeholder', 'e.g. 1.0')} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition placeholder-slate-400" onChange={handleClinicalChange} />
                     </div>
 
                     {/* Slope */}
                     <div>
-                        <label className="block text-slate-700 text-sm font-semibold mb-2">Slope of Peak Exercise ST</label>
+                        <label className="block text-slate-700 text-sm font-semibold mb-2">{tx('form_slope', 'Slope of Peak Exercise ST')}</label>
                         <select name="slope" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition" onChange={handleClinicalChange}>
-                            <option value="0">Upsloping</option>
-                            <option value="1">Flat</option>
-                            <option value="2">Downsloping</option>
+                            <option value="0">{tx('form_slope_up', 'Upsloping')}</option>
+                            <option value="1">{tx('form_slope_flat', 'Flat')}</option>
+                            <option value="2">{tx('form_slope_down', 'Downsloping')}</option>
                         </select>
                     </div>
 
                     {/* CA */}
                     <div>
-                        <label className="block text-slate-700 text-sm font-semibold mb-2">Major Vessels (0-3)</label>
+                        <label className="block text-slate-700 text-sm font-semibold mb-2">{tx('form_ca', 'Major Vessels (0-3)')}</label>
                         <input type="number" name="ca" min="0" max="3" required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition placeholder-slate-400" onChange={handleClinicalChange} />
                     </div>
 
                     {/* Thal */}
                     <div className="md:col-span-2">
-                        <label className="block text-slate-700 text-sm font-semibold mb-2">Thalassemia</label>
+                        <label className="block text-slate-700 text-sm font-semibold mb-2">{tx('form_thal', 'Thalassemia')}</label>
                         <select name="thal" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-800 transition" onChange={handleClinicalChange}>
-                            <option value="0">Normal</option>
-                            <option value="1">Fixed Defect</option>
-                            <option value="2">Reversable Defect</option>
+                            <option value="0">{tx('form_thal_normal', 'Normal')}</option>
+                            <option value="1">{tx('form_thal_fixed', 'Fixed Defect')}</option>
+                            <option value="2">{tx('form_thal_reversible', 'Reversible Defect')}</option>
                         </select>
                     </div>
 

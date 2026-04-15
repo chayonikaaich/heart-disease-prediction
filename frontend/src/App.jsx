@@ -96,8 +96,8 @@ function App() {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home lang={lang} translations={serverTranslations} />} />
-            <Route path="/about" element={<About lang={lang} />} />
-            <Route path="/learn-more" element={<LearnMore lang={lang} />} />
+            <Route path="/about" element={<About lang={lang} translations={serverTranslations} />} />
+            <Route path="/learn-more" element={<LearnMore lang={lang} translations={serverTranslations} />} />
           </Routes>
         </main>
 
