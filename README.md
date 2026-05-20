@@ -166,10 +166,16 @@ The project follows a linear Data Science + Software Engineering pipeline:
 
 ---
 
-## 👥 Team
-**Final Year Project** developed by:
-- Shatakshi Bhushan
-- Jayshree Jain
-- Swayam Jain
-- Chayonika Aich
-- Syed Aakif Sultan
+## 👥 Team & Division of Labor
+
+This project was developed by a team of **5 members**, each specializing in and owning distinct modules of the application to ensure clean architecture and separation of concerns.
+
+| Team Member | Role | Core Responsibilities & Modules | Key File / Directory Ownership | Key Tech |
+| :--- | :--- | :--- | :--- | :--- |
+| **Chayonika Aich** | **Project Lead & ML Engineer** | Machine learning pipeline, model selection, hyperparameter tuning, model serialization, and evaluation metrics. | `notebooks/analysis_pipeline.py`<br>`backend/train_model.py`<br>`backend/model.pkl` | Python, Scikit-Learn, Pandas, Joblib, Grid Search CV |
+| **Shatakshi Bhushan** | **Frontend Architect** | Responsive React layout, modular page structure, main assessment form validation, tailwind customization, and overall UI state flow. | `frontend/src/App.jsx`<br>`frontend/src/components/Home.jsx`<br>`frontend/src/components/PredictionForm.jsx`<br>`frontend/tailwind.config.js` | React, TailwindCSS, Vite, ES6+ JS |
+| **Jayshree Jain** | **Backend & API Engineer** | Flask RESTful server routing, CORS configuration, predictive post endpoints, server-side data validation, and multi-language JSON translation controllers. | `backend/app.py`<br>`backend/requirements.txt` | Python, Flask, Flask-CORS, REST APIs, JSON APIs |
+| **Swayam Jain** | **Data Scientist & EDA Specialist** | Raw dataset preprocessing, missing data cleansing, target binarization, Exploratory Data Analysis, and correlation heatmap generation. | `backend/processed.cleveland.data`<br>`notebooks/graphs/relation_matrix.png`<br>`notebooks/graphs/` | Python, Pandas, Matplotlib, Seaborn, UCI Repo |
+| **Syed Aakif Sultan** | **Integration & XAI Engineer** | API integration (fetch promises), Local Feature Importance heuristic for Explainable AI (XAI), and Geolocation-based cardiologist mapping. | `frontend/src/components/ResultDisplay.jsx`<br>`frontend/src/components/LearnMore.jsx` | React Hooks, Geolocation API, custom XAI algorithms, Leaflet/Maps |
+
+---
